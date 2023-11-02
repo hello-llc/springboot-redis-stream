@@ -1,6 +1,5 @@
 package com.llc.redis.method.config;
 
-
 import com.llc.redis.method.utils.IRedisService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,17 +17,17 @@ import java.util.Map;
 
 @Slf4j
 @Component
-public class ConsumeAckListener implements StreamListener<String, MapRecord<String, String, String>> {
+public class ConsumeStartListener implements StreamListener<String, MapRecord<String, String, String>> {
 
     @Autowired
     IRedisService iRedisService;
 
-    private static ConsumeAckListener consumeAckListener;
+    private static ConsumeStartListener consumeStartListener;
 
     @PostConstruct
     public void init() {
-        consumeAckListener = this;
-        consumeAckListener.iRedisService = this.iRedisService;
+        consumeStartListener = this;
+        consumeStartListener.iRedisService = this.iRedisService;
     }
 
     @Override
@@ -36,7 +35,7 @@ public class ConsumeAckListener implements StreamListener<String, MapRecord<Stri
         String stream = message.getStream();
         RecordId id = message.getId();
         Map<String, String> map = message.getValue();
-        log.info("[自动ack] 接收到一个消息 stream:[{}],id:[{}],value:[{}]", stream, id, map);
-        consumeAckListener.iRedisService.del(stream, id.getValue());
+        log.info("[独立消费] 接收到一个消息 stream:[{}],id:[{}],value:[{}]", stream, id, map);
+        consumeStartListener.iRedisService.del(stream, id.getValue());
     }
 }

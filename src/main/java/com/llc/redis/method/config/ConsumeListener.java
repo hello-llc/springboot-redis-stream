@@ -37,6 +37,5 @@ public class ConsumeListener implements StreamListener<String, MapRecord<String,
         Map<String, String> map = message.getValue();
         log.info("[不自动ack] 接收到一个消息 stream:[{}],id:[{}],value:[{}]", stream, id, map);
         consumeListener.iRedisService.ack(stream, "group", id.getValue());
-        consumeListener.iRedisService.del(stream, id.getValue());
     }
 }
