@@ -59,6 +59,9 @@ public class RedisStreamConfig {
 //        Subscription subscription = streamMessageListenerContainer.receive(Consumer.from("group", "consumer"),
 //                StreamOffset.create(RedisKey.STREAMKEY.code(), ReadOffset.lastConsumed()), new ConsumeListener());
 
+        // 独立消费
+//        Subscription subscription = streamMessageListenerContainer.receive(StreamOffset.fromStart(RedisKey.STREAMKEY.code()), new ConsumeStartListener());
+
         // 监听容器启动
         streamMessageListenerContainer.start();
         return subscription;
