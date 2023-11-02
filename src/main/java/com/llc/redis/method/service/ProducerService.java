@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ThreadPoolExecutor;
 
 /**
  * @author llc
@@ -20,11 +21,19 @@ public class ProducerService {
 
     @Autowired
     IRedisService iRedisService;
+    @Autowired
+    ThreadPoolExecutor threadPoolExecutor;
 
 
-    @Scheduled(cron = "5 * * * * ?")
+    @Scheduled(cron = "30 * * * * ?")
     public void sendRecord() {
-        for (int i = 0; i < 10; i++) {
+        for (int i = 0; i < 100; i++) {
+            threadPoolExecutor.execute(() -> record());
+        }
+    }
+
+    private void record() {
+        for (int i = 0; i < 100; i++) {
             Map<String, Object> map = new HashMap<>();
             map.put("serviceName", "licenseWorker");
             String result = iRedisService.addMap(RedisKey.STREAMKEY.code(), map);
